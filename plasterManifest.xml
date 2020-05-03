@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<plasterManifest schemaVersion="1.1" templateType="Project" xmlns="http://www.microsoft.com/schemas/PowerShell/Plaster/v1">
+  <metadata>
+    <name>TemplateModule</name>
+    <id>a8547c35-f77a-4e74-9f5c-105ad2055628</id>
+    <version>0.2.0</version>
+    <title>A PowerShell Module Template</title>
+    <description>A PowerShell Module Template</description>
+    <author>Wayne Boyles</author>
+    <tags></tags>
+  </metadata>
+  <parameters>
+    <parameter name='ModuleName' type='text' prompt='Module Name' default='${PLASTER_DestinationName}' />
+    <parameter name='ModuleDesc' type='text' prompt='Module Description (Required for PSGallery)' default='${PLASTER_ModuleName}' />
+    <parameter name='ModuleVers' type='text' prompt='Module Version' default='0.1.0' />
+    <parameter name='ModuleAuth' type='text' prompt='Module Author' default='Wayne Boyles' />
+  </parameters>
+  <content>
+    
+    <message>Creating Module Structure</message>
+    <file source='' destination='.vscode' />
+    <file source='' destination='Docs' />
+    <file source='' destination='Examples' />
+    <file source='' destination='Output' />
+    <file source='' destination='Tests' />
+    <file source='' destination='Source\Classes' />
+    <file source='' destination='Source\Enums' />
+    <file source='' destination='Source\Public' />
+    <file source='' destination='Source\Private' />
+
+    <message>Deploying Files</message>
+    <file source='.gitignore' destination=''/>
+    <templateFile source='README.md' destination=''/>
+    <templateFile source='LICENSE' destination=''/>
+
+    <file source='.vscode\launch.json' destination='' />
+    <file source='.vscode\settings.json' destination='' />
+    <file source='.vscode\PSScriptAnalyzerSettings.psd1' destination='' />
+
+    <templateFile source='appveyor.yml' destination='' />
+    <file source='build.ps1' destination='' />
+
+    <file source='Source\Module.psm1' destination='Source\${PLASTER_PARAM_ModuleName}.psm1' />
+
+    <message> Generating Module Manifest</message>
+    <newModuleManifest
+      destination='Source\${PLASTER_PARAM_ModuleName}.psd1'
+      moduleVersion='$PLASTER_PARAM_ModuleVers'
+      rootModule='${PLASTER_PARAM_ModuleName}.psm1'
+      author='$PLASTER_PARAM_ModuleAuth'
+      description='$PLASTER_PARAM_ModuleDesc' />
+
+
+  </content>
+</plasterManifest>

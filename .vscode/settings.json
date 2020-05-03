@@ -1,0 +1,17 @@
+{
+    "files.trimTrailingWhitespace": true,
+    "files.insertFinalNewline": false,
+    
+    "editor.insertSpaces": true,
+    "editor.tabSize": 4,
+    "editor.formatOnSave": true,
+
+    "powershell.codeFormatting.preset": "OTBS",
+    "powershell.codeFormatting.openBraceOnSameLine": false,
+    "powershell.codeFormatting.newLineAfterOpenBrace": true,
+    "powershell.scriptAnalysis.settingsPath": ".vscode/PSScriptAnalyzerSettings.psd1",
+
+    "[json]": {
+        "editor.tabSize": 4
+    }
+}
