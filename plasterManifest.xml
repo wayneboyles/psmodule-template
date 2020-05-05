@@ -14,9 +14,16 @@
     <parameter name='ModuleDesc' type='text' prompt='Module Description (Required for PSGallery)' default='${PLASTER_ModuleName}' />
     <parameter name='ModuleVers' type='text' prompt='Module Version' default='0.1.0' />
     <parameter name='ModuleAuth' type='text' prompt='Module Author' default='Wayne Boyles' />
+    <parameter name='GitHubUsername' type='user-fullname' prompt='GitHub Username' default='${PLASTER_PARAM_FullName}' />
+    <parameter name='GitHubRepo' type='text' prompt='GitHub Repository Name for this Module' />
+    <parameter name='License' type='choice' prompt='Module License'>
+      <choice label='&amp;Apache' help='Apache License' value='Apache' />
+      <choice label='&amp;MIT' help='MIT License' value='MIT' />
+      <choice label='&amp;None' help='No License' value='NONE' />
+    </parameter>
   </parameters>
   <content>
-    
+
     <message>Creating Module Structure</message>
     <file source='' destination='.vscode' />
     <file source='' destination='Docs' />
@@ -39,6 +46,7 @@
 
     <templateFile source='appveyor.yml' destination='' />
     <file source='build.ps1' destination='' />
+    <file source='psake.ps1' destination='' />
 
     <file source='Source\Module.psm1' destination='Source\${PLASTER_PARAM_ModuleName}.psm1' />
 
