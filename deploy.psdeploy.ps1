@@ -1,6 +1,7 @@
 if ($Env:BHModulePath -and $Env:BHBuildSystem -ne 'Unknown' -and $Env:BHBranchName -eq 'Master' -and $Env:BHCommitMessage -match '!deploy') {
 
     Deploy Module {
+
         By PSGalleryModule {
             FromSource $Env:BHModulePath
             To PSGallery
@@ -8,6 +9,7 @@ if ($Env:BHModulePath -and $Env:BHBuildSystem -ne 'Unknown' -and $Env:BHBranchNa
                 ApiKey = $Env:PrivateNuGetApiKey
             }
         }
+
     }
 
 } else {
