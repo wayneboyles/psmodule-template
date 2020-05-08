@@ -3,54 +3,115 @@
   <metadata>
     <name>TemplateModule</name>
     <id>a8547c35-f77a-4e74-9f5c-105ad2055628</id>
-    <version>0.2.0</version>
+    <version>0.3.0</version>
     <title>A PowerShell Module Template</title>
     <description>A PowerShell Module Template</description>
     <author>Wayne Boyles</author>
     <tags></tags>
   </metadata>
   <parameters>
+
+    <!-- Name of the Module -->
     <parameter name='ModuleName' type='text' prompt='Module Name' default='${PLASTER_DestinationName}' />
+
+    <!-- Description of the Module. This is required for PSGallery -->
     <parameter name='ModuleDesc' type='text' prompt='Module Description (Required for PSGallery)' default='${PLASTER_ModuleName}' />
+
+    <!-- Version of the Module. -->
     <parameter name='ModuleVers' type='text' prompt='Module Version' default='0.1.0' />
+
+    <!-- Module authors name. -->
     <parameter name='ModuleAuth' type='text' prompt='Module Author' default='Wayne Boyles' />
+
+    <!-- The Module License -->
+    <parameter name='License' type='choice' prompt='Please select a license:' default='1'>
+      <choice label='&amp;Apache' value='Apache' help='Use the Apache License' />
+      <choice label='&amp;MIT' value='MIT' help='Use the MIT License' />
+      <choice label='&amp;None' value='None' help='Do not specify a license type' />
+    </parameter>
+
+    <!-- The type of module that we are creating.  Based on this answer, other options will be displayed to the user -->
+    <parameter name='ModuleType' type='choice' prompt='What type of Module is this?' default='1'>
+      <choice label='&amp;Basic' value='Basic' help='A basic module where functions are defined in the PSM1 file.' />
+      <choice label='&amp;Standard' value='Standard' help='A standard module with public and private classes containing the functions.' />
+      <choice label='&amp;Custom' value='Custom' help='Choose what to add to your module.' />
+    </parameter>
+
+    <!-- Items to include. This only appears for a Custom module. -->
+    <parameter name='Options' type='multichoice' prompt='Please select the components for this module:' default='0,1,2,3' condition='$PLASTER_PARAM_ModuleType -eq "Custom"' >
+      <choice label='&amp;Enums' value='Enums' help='Include Enums in your module.' />
+      <choice label='&amp;Classes' value='Classes' help='Include Classes in your module.' />
+      <choice label='&amp;Private Functions' value='Private' help='Include Private functions in your module.' />
+      <choice label='&amp;Public Functions' value='Public' help='Include Public functions in your module.' />
+    </parameter>
+
+    <!-- Support for docs? -->
+    <parameter name='DocsSupport' type='choice' prompt='Include support for MKDocs? (This is NOT IMPLEMENTED YET)' default='0'>
+      <choice label='&amp;Yes' value='Yes' help='Yes, include MKDocs support.' />
+      <choice label='&amp;No' value='No' help='No, do not include MKDocs support.' />
+    </parameter>
+
+    <!-- Support for pester tests? -->
+    <parameter name='PesterSupport' type='choice' prompt='Include support for Pester tests?' default='0'>
+      <choice label='&amp;Yes' value='Yes' help='Yes, include Pester tests.' />
+      <choice label='&amp;No' value='No' help='No, do not include Pester tests.' />
+    </parameter>
+
+    <!-- Editor Choice -->
+    <parameter name='Editor' type='choice' prompt='Which IDE are you using?' default='0'>
+      <choice label='Visual Studio &amp;Code' value='VSCode' help='Visual Studio Code' />
+      <choice label='&amp;Other' value='Other' help='Unspecified IDE type' />
+    </parameter>
+
   </parameters>
   <content>
 
-    <message>Creating Module Structure</message>
-    <file source='' destination='.vscode' />
-    <file source='' destination='Docs' />
+    <message condition='$PLASTER_PARAM_ModuleType -eq "Basic"'>Scaffolding your Basic PowerShell Module...</message>
+    <message condition='$PLASTER_PARAM_ModuleType -eq "Standard"'>Scaffolding your Standard PowerShell Module...</message>
+    <message condition='$PLASTER_PARAM_ModuleType -eq "Custom"'>Scaffolding your Custom PowerShell Module...</message>
+
+    <!-- Folder Layout -->
+    <file source='' destination='Docs' condition='$PLASTER_PARAM_DocsSupport -eq "Yes"' />
     <file source='' destination='Examples' />
     <file source='' destination='Output' />
-    <file source='' destination='Tests' />
-    <file source='' destination='Source\Classes' />
-    <file source='' destination='Source\Enums' />
-    <file source='' destination='Source\Public' />
-    <file source='' destination='Source\Private' />
+    <file source='' destination='Tests' condition='$PLASTER_PARAM_PesterSupport -eq "Yes"' />
+    <file source='' destination='Source\Classes' condition='$PLASTER_PARAM_ModuleType -eq "Standard" -or ($PLASTER_PARAM_ModuleType -eq "Custom" -and $PLASTER_PARAM_Options -contains "Classes")' />
+    <file source='' destination='Source\Enums' condition='$PLASTER_PARAM_ModuleType -eq "Standard" -or ($PLASTER_PARAM_ModuleType -eq "Custom" -and $PLASTER_PARAM_Options -contains "Enums")' />
+    <file source='' destination='Source\Public' condition='$PLASTER_PARAM_ModuleType -eq "Standard" -or ($PLASTER_PARAM_ModuleType -eq "Custom" -and $PLASTER_PARAM_Options -contains "Public")' />
+    <file source='' destination='Source\Private' condition='$PLASTER_PARAM_ModuleType -eq "Standard" -or ($PLASTER_PARAM_ModuleType -eq "Custom" -and $PLASTER_PARAM_Options -contains "Private")' />
 
-    <message>Deploying Files</message>
+    <!-- Root Files -->
     <file source='.gitignore' destination=''/>
     <templateFile source='README.md' destination=''/>
-    <templateFile source='LICENSE' destination=''/>
-
-    <file source='.vscode\launch.json' destination='' />
-    <file source='.vscode\settings.json' destination='' />
-    <file source='.vscode\PSScriptAnalyzerSettings.psd1' destination='' />
-
+    <templateFile source='ReleaseNotes.md' destination='' />
     <templateFile source='appveyor.yml' destination='' />
     <file source='build.ps1' destination='' />
     <file source='psake.ps1' destination='' />
 
-    <file source='Source\Module.psm1' destination='Source\${PLASTER_PARAM_ModuleName}.psm1' />
+    <!-- License -->
+    <file source='LICENSE-APACHE' destination='LICENSE' condition='$PLASTER_PARAM_License -eq "Apache"' />
+    <templateFile source='LICENSE-MIT' destination='LICENSE' condition='$PLASTER_PARAM_License -eq "MIT"' />
 
-    <message> Generating Module Manifest</message>
+    <!-- VS Code Files-->
+    <file source='' destination='.vscode' condition='$PLASTER_PARAM_Editor -eq "VSCode"' />
+    <file source='.vscode\launch.json' destination='' condition='$PLASTER_PARAM_Editor -eq "VSCode"' />
+    <file source='.vscode\settings.json' destination='' condition='$PLASTER_PARAM_Editor -eq "VSCode"' />
+    <file source='.vscode\PSScriptAnalyzerSettings.psd1' destination='' condition='$PLASTER_PARAM_Editor -eq "VSCode"' />
+
+    <!-- Test Files -->
+    <file source='Tests\Project.Tests.ps1' destination='' condition='$PLASTER_PARAM_PesterSupport -eq "Yes"' />
+
+    <!-- Module File -->
+    <file source='Source\StandardModule.psm1' destination='Source\${PLASTER_PARAM_ModuleName}.psm1' condition='$PLASTER_PARAM_ModuleType -ne "Basic"' />
+    <file source='Source\BasicModule.psm1' destination='Source\${PLASTER_PARAM_ModuleName}.psm1' condition='$PLASTER_PARAM_ModuleType -eq "Basic"' />
+
+    <!-- Module Manifest -->
     <newModuleManifest
       destination='Source\${PLASTER_PARAM_ModuleName}.psd1'
       moduleVersion='$PLASTER_PARAM_ModuleVers'
       rootModule='${PLASTER_PARAM_ModuleName}.psm1'
       author='$PLASTER_PARAM_ModuleAuth'
       description='$PLASTER_PARAM_ModuleDesc' />
-
 
   </content>
 </plasterManifest>
